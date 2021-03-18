@@ -117,7 +117,21 @@ def styleTransfer(contentImg, styleImg, imgname, csF, wct):
     return
 
 
-def run(args):
+def singleLevelStyleTransfer(contentImg, styleImg, imgname, csF, wct):
+    """ Performs single level style transfer on content image and saves image"""
+
+    sF = wct.e5(styleImg)
+    cF = wct.e5(contentImg)
+    sF = sF.data.cpu().squeeze(0)
+    cF = cF.data.cpu().squeeze(0)
+    csF = wct.transform(cF, sF, csF, args.alpha)
+    Im = wct.d5(csF)
+
+    vutils.save_image(Im.data.cpu().float(), os.path.join(args.outf, imgname))
+    return
+
+
+def run(args, singleLevel=False):
 
     """Calls style transfer function and measures average time taken"""
 
@@ -146,9 +160,15 @@ def run(args):
         cImg = Variable(contentImg, volatile=True)
         sImg = Variable(styleImg, volatile=True)
 
-        start_time = time.time()
-        styleTransfer(cImg, sImg, imgname, csF, wct)
-        end_time = time.time()
+        if singleLevel:
+            start_time = time.time()
+            singleLevelStyleTransfer(cImg, sImg, imgname, csF, wct)
+            end_time = time.time()
+
+        else:
+            start_time = time.time()
+            styleTransfer(cImg, sImg, imgname, csF, wct)
+            end_time = time.time()
 
         print("Elapsed time is: %f" % (end_time - start_time))
         avgTime += end_time - start_time
@@ -168,4 +188,4 @@ except OSError:
 dataset = Dataset(args.contentPath, args.stylePath, args.fineSize)
 loader = torch.utils.data.DataLoader(dataset=dataset, batch_size=1, shuffle=False)
 
-run(args)
+run(args, singleLevel=True)
