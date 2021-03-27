@@ -17,6 +17,13 @@ def parseArgs():
     parser = argparse.ArgumentParser(description="WCT Pytorch")
     parser.add_argument("--contentPath", default="images/content", help="path to train")
     parser.add_argument("--stylePath", default="images/style", help="path to train")
+    parser.add_argument("--outf", default="images/samples", help="folder to output images")
+    parser.add_argument(
+        "--alpha",
+        type=float,
+        default=1,
+        help="hyperparameter to blend wct feature and content feature",
+    )
     parser.add_argument(
         "--workers",
         default=2,
@@ -81,13 +88,6 @@ def parseArgs():
         type=int,
         default=512,
         help="resize image to fineSize x fineSize,leave it to 0 if not resize",
-    )
-    parser.add_argument("--outf", default="images/samples", help="folder to output images")
-    parser.add_argument(
-        "--alpha",
-        type=float,
-        default=1,
-        help="hyperparameter to blend wct feature and content feature",
     )
     parser.add_argument(
         "--gpu", type=int, default=0, help="which gpu to run on.  default is 0"
