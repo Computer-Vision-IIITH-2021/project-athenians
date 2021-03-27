@@ -8,6 +8,7 @@ import torchvision.datasets as datasets
 from Loader import Dataset
 from WCT import WCT
 
+torch.backends.cudnn.benchmark = True
 
 def parseArgs():
 
