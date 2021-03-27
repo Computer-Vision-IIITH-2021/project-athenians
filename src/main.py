@@ -82,7 +82,7 @@ def parseArgs():
         default=512,
         help="resize image to fineSize x fineSize,leave it to 0 if not resize",
     )
-    parser.add_argument("--outf", default="samples/", help="folder to output images")
+    parser.add_argument("--outf", default="images/samples", help="folder to output images")
     parser.add_argument(
         "--alpha",
         type=float,
