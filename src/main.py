@@ -190,4 +190,4 @@ except OSError:
 dataset = Dataset(args.contentPath, args.stylePath, args.fineSize, args.scaleStyle)
 loader = torch.utils.data.DataLoader(dataset=dataset, batch_size=1, shuffle=False)
 
-run(args, singleLevel=True)
+run(args)
