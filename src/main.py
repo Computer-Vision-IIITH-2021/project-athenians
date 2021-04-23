@@ -19,6 +19,7 @@ def parseArgs():
     parser.add_argument("--stylePath", default="images/style", help="path to train")
     parser.add_argument("--outf", default="images/samples", help="folder to output images")
     parser.add_argument("--scaleStyle", type=int, default=512, help="scale style image: size of style image")
+    parser.add_argument("--singleLevel", type=str, default="False", help="argument to obtain single level stylization")
     parser.add_argument(
         "--alpha",
         type=float,
@@ -190,4 +191,4 @@ except OSError:
 dataset = Dataset(args.contentPath, args.stylePath, args.fineSize, args.scaleStyle)
 loader = torch.utils.data.DataLoader(dataset=dataset, batch_size=1, shuffle=False)
 
-run(args)
+run(args,singleLevel=(args.singleLevel=="True"))
