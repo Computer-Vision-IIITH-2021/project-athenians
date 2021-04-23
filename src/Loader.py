@@ -5,7 +5,7 @@ import torch.utils.data as data
 
 
 class Dataset(data.Dataset):
-    def __init__(self, content_Img_path, style_Img_path, size_Desired):
+    def __init__(self, content_Img_path, style_Img_path, size_Desired, scaleStyle):
         super(Dataset, self).__init__()
         self.prep = transforms.Compose(
             [transforms.Scale(size_Desired), transforms.ToTensor()]
@@ -14,6 +14,7 @@ class Dataset(data.Dataset):
         self.style_Img_path = style_Img_path
 
         self.size_Desired = size_Desired
+        self.scaleStyle = scaleStyle
 
         image_list = []
         for img in os.listdir(content_Img_path):
@@ -39,7 +40,7 @@ class Dataset(data.Dataset):
                         (self.size_Desired, int(height * self.size_Desired / width))
                     )
                     style_img = style_img.resize(
-                        (self.size_Desired, int(height * self.size_Desired / width))
+                        (self.scaleStyle, int(height * self.scaleStyle / width))
                     )
 
             else:
@@ -48,7 +49,7 @@ class Dataset(data.Dataset):
                     content_img = content_img.resize(
                         (self.size_Desired, self.size_Desired)
                     )
-                    style_img = style_img.resize((self.size_Desired, self.size_Desired))
+                    style_img = style_img.resize((self.scaleStyle, self.scaleStyle))
 
         content_img = transforms.ToTensor()(content_img)
         style_img = transforms.ToTensor()(style_img)
