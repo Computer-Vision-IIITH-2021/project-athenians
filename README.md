@@ -38,5 +38,5 @@ python main.py --cuda --stylePath images/style --outf images/samples --cuda
 
 To add style to image with user control of mask, do
 ```bash
-python run_with_masks.py --contentPath <path to content images> --stylePath <path to style images> --masksContentPath <path to mask img> --cuda 
+python run_with_masks.py --masksContentPath <path to content image> --masksStylePath <path to style image directory> --masksResultPath <path to result generated with mask> --cuda 
 ```
