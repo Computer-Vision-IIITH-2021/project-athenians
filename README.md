@@ -32,3 +32,11 @@ example:
 python main.py --cuda
 ```
 
+```bash
+python main.py --cuda --stylePath images/style --outf images/samples --cuda
+```
+
+To add style to image with user control of mask, do
+```bash
+python run_with_masks.py --contentPath <path to content images> --stylePath <path to style images> --masksContentPath <path to mask img> --cuda 
+```
