@@ -124,6 +124,11 @@ def parseArgs():
         default="mask_images/result.jpg",
         help="path to result for masks",
     )
+    parser.add_argument(
+        "--masksMaskPath",
+        default="mask_images/mask.png",
+        help="path to result for masks",
+    )
 
     args = parser.parse_args()
     return args
@@ -172,21 +177,29 @@ def style_transfer_multiple_styles(args, contentImg, styleImgList):
     return style_transferred_images
 
 
-def run_style_transfer_with_masks(args):
+def run_style_transfer_with_masks(args, read_mask = True):
     """Runs style transfer with masks"""
 
     content_image_path = args.masksContentPath
     style_images_directory_path = args.masksStylePath
 
     content_img = Image.open(content_image_path).convert("RGB")
+    print(content_img.size)
 
     width, height = content_img.size
 
     # Generate mask
     mask = np.zeros((height, width))
-    rr, cc = circle(int(height / 2), int(width / 2), 600)
-    # mask[0 : int(height / 2), :] = 1
-    mask[rr, cc] = 1
+    # rr, cc = circle(int(height / 2), int(width / 2), 600)
+    mask[0 : int(height / 2), :] = 1
+    # mask[rr, cc] = 1
+    if read_mask:
+        mask = cv2.imread(args.masksMaskPath, cv2.IMREAD_GRAYSCALE)
+        _ , mask = cv2.threshold(mask, 127, 1,cv2.THRESH_BINARY)
+        mask = mask.astype('int')
+        
+
+
 
 
     style_image_names_list = []
@@ -196,6 +209,7 @@ def run_style_transfer_with_masks(args):
         if img_lis[1] in extensions:
             style_image_names_list.append(img)
             print("Using image: ", img)
+    print(style_image_names_list)
 
     size_Desired = args.fineSize
     scaleStyle = args.scaleStyle
@@ -224,7 +238,6 @@ def run_style_transfer_with_masks(args):
 
                 style_image_list.append(style_img)
     else:
-        if height != size_Desired:
             size_Desired = int(width * size_Desired / height)
             content_img = content_img.resize((size_Desired, size_Desired))
             mask = cv2.resize(mask, content_img.size, interpolation=cv2.INTER_NEAREST)
@@ -249,11 +262,13 @@ def run_style_transfer_with_masks(args):
 
     if args.cuda:
         content_img = content_img.cuda(args.gpu)
-
+    
+    print(len(style_image_list))
     # Get style transferred images
     style_transferred_images = style_transfer_multiple_styles(
         args, content_img, style_image_list
     )
+    print(len(style_transferred_images))
 
     result_image = Image.new(
         "RGB",
